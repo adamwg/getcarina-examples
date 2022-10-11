@@ -14,23 +14,23 @@ logger.info("Welcome to Guestbook: Mongo Edition")
 
 
 host = os.getenv('MONGO_HOST')
-port = int(os.getenv('MONGO_PORT'))
-ssl = os.getenv('MONGO_SSL') == 'True'
-db = os.getenv('MONGO_DATABASE')
+dbname = os.getenv('MONGO_DATABASE')
 username = os.getenv('MONGO_USER')
 password = os.getenv('MONGO_PASSWORD')
-
+conn_str = 'mongodb+srv://{username}:{password}@{host}/{dbname}'.format(
+    username=username,
+    password=password,
+    host=host,
+    dbname=dbname)
 
 logger.debug("The log statement below is for educational purposes only. "
              "Do not log credentials.")
-logger.debug('mongodb://%s:%s@%s:%s/%s?ssl=%s',
-             username, password, host, port, db, ssl)
+logger.debug(conn_str)
 
 
 app = Flask(__name__)
-client = MongoClient(host, port, ssl=ssl)
-db = client.get_database(db)
-db.authenticate(username, password)
+client = MongoClient(conn_str)
+db = client.get_database(dbname)
 guests = db.guests
 
 

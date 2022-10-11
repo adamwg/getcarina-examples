@@ -3,7 +3,7 @@ import os
 
 from flask import Flask, render_template, request, redirect, url_for
 
-from redis import Redis
+import redis
 
 
 logging.basicConfig(
@@ -12,13 +12,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.info("Welcome to Guestbook: Redis Edition")
 
-
-host = os.getenv('REDIS_HOST')
-port = int(os.getenv('REDIS_PORT'))
-
 app = Flask(__name__)
-redis = Redis(host=host, port=port, charset='utf-8', decode_responses=True)
-
+redis = redis.from_url(os.getenv('REDIS_URI'))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
